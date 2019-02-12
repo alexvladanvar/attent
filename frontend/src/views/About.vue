@@ -1,5 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    You can see our project's code over here:
+    <a href="https://github.com/alexvladanvar/attent">Github</a>
   </div>
 </template>

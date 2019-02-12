@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
+  <v-app>
     <app-header></app-header>
-    <div class="container">
+    <v-content>
       <router-view />
-    </div>
-  </div>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
@@ -16,18 +16,4 @@ export default {
 }
 </script>
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  font-family: 'Lato';
-  color: #212121;
-}
-
-.container {
-  margin: 15px;
-}
-
-#app {
-}
-</style>
+<style></style>

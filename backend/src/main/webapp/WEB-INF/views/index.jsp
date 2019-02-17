@@ -12,10 +12,10 @@
 </head>
 <body>
 <h1>
-    Hello My First Spring MVC Project
+    Index
 </h1>
 <h3>
-    Devnull you know
+    null you know
 </h3>
 </body>
 </html>

@@ -5,7 +5,7 @@
       <v-text-field
         v-model="name"
         :error-messages="nameErrors"
-        :counter="10"
+        :counter="30"
         label="Name"
         required
         @input="$v.name.$touch()"
@@ -19,6 +19,25 @@
         @input="$v.email.$touch()"
         @blur="$v.email.$touch()"
       ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :error-messages="passwordErrors"
+        :counter="100"
+        label="Password"
+        type="password"
+        required
+        @input="$v.password.$touch()"
+        @blur="$v.password.$touch()"
+      ></v-text-field>
+      <v-text-field
+        v-model="password2"
+        :error-messages="password2Errors"
+        label="Confirm Password"
+        required
+        type="password"
+        @input="$v.password2.$touch()"
+        @blur="$v.password2.$touch()"
+      ></v-text-field>
       <v-select
         v-model="select"
         :items="items"
@@ -28,6 +47,7 @@
         @change="$v.select.$touch()"
         @blur="$v.select.$touch()"
       ></v-select>
+
       <v-text-field
         v-if="select === 'Student'"
         v-model="group"
@@ -38,34 +58,47 @@
         @blur="$v.group.$touch()"
       ></v-text-field>
 
-      <v-btn @click="submit">Sign Up</v-btn>
+      <v-btn :loading="loading" @click="submit" color="light-blue" dark
+        >Sign Up</v-btn
+      >
     </form>
   </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, email, minLength } from 'vuelidate/lib/validators'
+import {
+  required,
+  email,
+  minLength,
+  maxLength,
+  sameAs
+} from 'vuelidate/lib/validators'
+import { mapState, mapActions } from 'vuex'
 export default {
   mixins: [validationMixin],
 
   validations: {
-    name: { required, minLength: minLength(4) },
+    name: { required, minLength: minLength(4), maxLength: maxLength(30) },
     email: { required, email },
+    password: { required, minLength: minLength(5), maxLength: maxLength(100) },
     select: { required },
-    group: { required }
+    group: { required },
+    password2: { required, sameAs: sameAs('password') }
   },
 
   data: () => ({
-    group: '',
-    name: '',
-    email: '',
-    select: null,
-    items: ['Student', 'Teacher'],
-    checkbox: false
+    group: 'qweqwe',
+    name: 'qweqwe',
+    email: 'qweqwe@qweqwe.qwe',
+    password: 'qweqwe',
+    password2: 'qweqwe',
+    select: 'Student',
+    items: ['Student', 'Teacher']
   }),
 
   computed: {
+    ...mapState(['loading']),
     selectErrors() {
       const errors = []
       if (!this.$v.select.$dirty) return errors
@@ -78,6 +111,8 @@ export default {
       !this.$v.name.minLength &&
         errors.push('Name must be at least 4 characters long')
       !this.$v.name.required && errors.push('Name is required.')
+      !this.$v.name.maxLength &&
+        errors.push('Name must be at most 30 character long')
       return errors
     },
     emailErrors() {
@@ -87,22 +122,42 @@ export default {
       !this.$v.email.required && errors.push('E-mail is required')
       return errors
     },
+    passwordErrors() {
+      const errors = []
+      if (!this.$v.password.$dirty) return errors
+      !this.$v.password.required && errors.push('Password is required')
+      !this.$v.password.minLength &&
+        errors.push('Password must be at least 5 character long')
+      !this.$v.password.maxLength &&
+        errors.push('Password must be at most 100 character long')
+      return errors
+    },
     groupErrors() {
       const errors = []
       if (!this.$v.group.$dirty) return errors
       !this.$v.group.required && errors.push('Group is required')
       return errors
+    },
+    password2Errors() {
+      const errors = []
+      if (!this.$v.password2.$dirty) return errors
+      !this.$v.password2.required && errors.push('You must confirm password')
+      !this.$v.password2.sameAs && errors.push('Passwords must match')
+      return errors
     }
   },
 
   methods: {
+    ...mapActions(['setLoading', 'submitSignup']),
     submit() {
       this.$v.$touch()
       const { nameErrors, emailErrors, groupErrors } = this
       const errors = [...nameErrors, ...emailErrors, ...groupErrors]
 
       if (!errors.length) {
-        console.log('submitting')
+        // call submit action
+        const { email, password, group, select } = this
+        this.submitSignup({ email, password, group, role: select })
       }
     },
     clear() {

@@ -5,6 +5,7 @@
         <v-icon>home</v-icon>
       </v-btn>
       <v-btn flat to="/signup">Sign Up</v-btn>
+      <v-btn flat to="/login">Log In</v-btn>
     </v-toolbar-items>
     <v-spacer class="spacer"></v-spacer>
     <v-toolbar-items>

@@ -88,12 +88,12 @@ export default {
   },
 
   data: () => ({
-    group: 'qweqwe',
-    name: 'qweqwe',
-    email: 'qweqwe@qweqwe.qwe',
-    password: 'qweqwe',
-    password2: 'qweqwe',
-    select: 'Student',
+    group: '',
+    name: '',
+    email: '',
+    password: '',
+    password2: '',
+    select: null,
     items: ['Student', 'Teacher']
   }),
 
@@ -151,21 +151,29 @@ export default {
     ...mapActions(['setLoading', 'submitSignup']),
     submit() {
       this.$v.$touch()
-      const { nameErrors, emailErrors, groupErrors } = this
-      const errors = [...nameErrors, ...emailErrors, ...groupErrors]
+      const {
+        nameErrors,
+        emailErrors,
+        groupErrors,
+        selectErrors,
+        password2Errors,
+        passwordErrors
+      } = this
+      const errors = [
+        ...nameErrors,
+        ...emailErrors,
+        ...groupErrors,
+        ...passwordErrors,
+        ...selectErrors,
+        ...password2Errors
+      ]
 
+      console.log(errors)
       if (!errors.length) {
         // call submit action
         const { email, password, group, select } = this
         this.submitSignup({ email, password, group, role: select })
       }
-    },
-    clear() {
-      this.$v.$reset()
-      this.name = ''
-      this.email = ''
-      this.select = null
-      this.checkbox = false
     }
   }
 }

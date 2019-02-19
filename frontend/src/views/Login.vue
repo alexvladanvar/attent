@@ -22,7 +22,7 @@
       ></v-text-field>
 
       <v-btn :loading="loading" @click="submit" color="light-blue" dark
-        >Sign Up</v-btn
+        >Log In</v-btn
       >
     </form>
   </div>
@@ -41,8 +41,8 @@ export default {
   },
 
   data: () => ({
-    email: 'qweqwe@qweqwe.qwe',
-    password: 'qweqwe'
+    email: '',
+    password: ''
   }),
 
   computed: {

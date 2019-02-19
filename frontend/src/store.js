@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import { signUp } from './services/UserServices'
+import { signUp, logIn } from './services/UserServices'
 
 export default new Vuex.Store({
   state: {
@@ -14,7 +14,7 @@ export default new Vuex.Store({
     SET_LOADING(store, loading) {
       store.loading = loading
     },
-    SIGN_UP(store, data) {
+    LOG_IN(store, data) {
       store.user = data
     }
   },
@@ -25,14 +25,10 @@ export default new Vuex.Store({
     async submitSignup({ commit }, data) {
       commit('SET_LOADING', true)
 
-      try {
-        await signUp(data)
-        commit('SIGN_UP', data)
-
+      return signUp(data).then(data => {
         commit('SET_LOADING', false)
-      } catch (error) {
-        console.log(error)
-      }
+        return data
+      })
     }
   }
 })

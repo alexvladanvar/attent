@@ -149,7 +149,7 @@ export default {
 
   methods: {
     ...mapActions(['setLoading', 'submitSignup']),
-    submit() {
+    async submit() {
       this.$v.$touch()
       const {
         nameErrors,
@@ -172,7 +172,8 @@ export default {
       if (!errors.length) {
         // call submit action
         const { email, password, group, select } = this
-        this.submitSignup({ email, password, group, role: select })
+        await this.submitSignup({ email, password, group, role: select })
+        this.$router.push('/login')
       }
     }
   }

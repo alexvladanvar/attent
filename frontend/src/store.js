@@ -22,10 +22,19 @@ export default new Vuex.Store({
     setLoading({ commit }, loading) {
       commit('SET_LOADING', loading)
     },
-    async submitSignup({ commit }, data) {
+    submitSignup({ commit }, data) {
       commit('SET_LOADING', true)
 
       return signUp(data).then(data => {
+        commit('SET_LOADING', false)
+        return data
+      })
+    },
+    submitLogin({ commit }, data) {
+      commit('SET_LOADING', true)
+
+      return logIn(data).then(data => {
+        commit('LOG_IN', data)
         commit('SET_LOADING', false)
         return data
       })

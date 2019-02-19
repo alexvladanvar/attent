@@ -170,7 +170,6 @@ export default {
 
       console.log(errors)
       if (!errors.length) {
-        // call submit action
         const { email, password, group, select } = this
         await this.submitSignup({ email, password, group, role: select })
         this.$router.push('/login')

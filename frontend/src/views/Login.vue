@@ -68,24 +68,23 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setLoading', 'submitSignup']),
-    submit() {
+    ...mapActions(['setLoading', 'submitSignup', 'submitLogin']),
+    async submit() {
       this.$v.$touch()
-      const { nameErrors, emailErrors, groupErrors } = this
-      const errors = [...nameErrors, ...emailErrors, ...groupErrors]
+      const { emailErrors, passwordErrors } = this
+      const errors = [...emailErrors, ...passwordErrors]
 
       if (!errors.length) {
         // call submit action
-        const { email, password, group, select } = this
-        this.submitSignup({ email, password, group, role: select })
+        const { email, password } = this
+        await this.submitLogin({ email, password })
+        this.$router.push('/')
       }
     },
     clear() {
       this.$v.$reset()
       this.name = ''
-      this.email = ''
-      this.select = null
-      this.checkbox = false
+      this.password = ''
     }
   }
 }

@@ -6,13 +6,21 @@ import Login from './views/Login.vue'
 
 Vue.use(Router)
 
-export default new Router({
+import store from './store'
+
+const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Home,
+      meta: { requiresAuth: true }
     },
     {
       path: '/signup',
@@ -35,3 +43,13 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.fullPath === '/' && store.state.user) {
+    next('/profile')
+    console.log('redirect')
+  }
+  next()
+})
+
+export default router

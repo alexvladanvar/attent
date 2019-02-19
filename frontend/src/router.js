@@ -2,10 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Signup from './views/Signup.vue'
+import Login from './views/Login.vue'
 
 Vue.use(Router)
 
-export default new Router({
+import store from './store'
+
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -14,9 +17,20 @@ export default new Router({
       component: Home
     },
     {
+      path: '/profile',
+      name: 'profile',
+      component: Home,
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/signup',
       name: 'signup',
       component: Signup
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/about',
@@ -29,3 +43,13 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.fullPath === '/' && store.state.user) {
+    next('/profile')
+    console.log('redirect')
+  }
+  next()
+})
+
+export default router

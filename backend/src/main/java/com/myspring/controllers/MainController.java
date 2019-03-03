@@ -3,7 +3,6 @@ package com.myspring.controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.myspring.beans.DBBean;
-import com.myspring.db.TimeDB;
 import com.myspring.entities.UserTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,14 +21,21 @@ public class MainController {
     public static Gson gson = new Gson();
     //public static Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-    @CrossOrigin
-    @ResponseBody
-    @RequestMapping(value = {"index", "/"})
-    public String indexPage(@RequestBody UserTest obj) {
-        System.out.println(obj);
-        System.out.println(obj.getUserId() + " " + obj.getLogin() + " " + obj.getPassword());
-        return gson.toJson(obj);
-    }
+//    @CrossOrigin
+//    @ResponseBody
+//    @RequestMapping(value = {"index", "/"})
+//    public String indexPage(@RequestBody UserTest obj) {
+//        System.out.println(obj);
+//        System.out.println(obj.getUserId() + " " + obj.getLogin() + " " + obj.getPassword());
+//        return gson.toJson(obj);
+//    }
+
+        @RequestMapping(value = "index", method = RequestMethod.GET)
+        public ModelAndView indexPage() {
+            return new ModelAndView("index");
+        }
+
+
 
 
 

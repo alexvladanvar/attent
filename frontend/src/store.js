@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 Vue.use(Vuex)
 
 import { signUp, logIn } from './services/UserServices'
@@ -16,6 +15,9 @@ export default new Vuex.Store({
     },
     LOG_IN(store, data) {
       store.user = data
+    },
+    LOG_OUT(store) {
+      store.user = null
     }
   },
   actions: {
@@ -33,11 +35,19 @@ export default new Vuex.Store({
     submitLogin({ commit }, data) {
       commit('SET_LOADING', true)
 
-      return logIn(data).then(data => {
-        commit('LOG_IN', data)
+      return logIn(data).then(resData => {
+        commit('LOG_IN', {
+          login: 'John Done',
+          role: 'Student',
+          group: 'CSSE-1601'
+        })
         commit('SET_LOADING', false)
-        return data
+        console.log(resData)
+        return resData
       })
+    },
+    logout({ commit }) {
+      commit('LOG_OUT')
     }
   }
 })

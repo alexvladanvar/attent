@@ -3,10 +3,10 @@
     <v-container fill-height>
       <v-layout align-center>
         <v-flex>
-          <h3 class="display-3">Welcome to the Attent</h3>
+          <h3 class="display-3">Welcome to Attent</h3>
 
           <span class="subheading"
-            >Attent is aimed to make attendance checking more covenient</span
+            >Attent is aimed to make attendance marking more covenient</span
           >
 
           <v-divider class="my-3"></v-divider>
@@ -15,6 +15,9 @@
 
           <v-btn class="mx-0" color="green accent-3" dark to="/signup"
             >Sign Up</v-btn
+          >
+          <v-btn class="mx-3" color="green accent-3" dark to="/login"
+            >Log In</v-btn
           >
         </v-flex>
       </v-layout>

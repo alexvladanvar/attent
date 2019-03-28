@@ -5,6 +5,7 @@ import Signup from './views/Signup.vue'
 import Login from './views/Login.vue'
 import Profile from './views/Profile.vue'
 import Logout from './views/Logout.vue'
+import Generate from './views/Generate.vue'
 
 Vue.use(Router)
 
@@ -53,6 +54,12 @@ const router = new Router({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ './views/About.vue')
+    },
+    {
+      path: '/generate',
+      name: 'generate',
+      component: Generate,
+      meta: { requiresAuth: true }
     }
   ]
 })

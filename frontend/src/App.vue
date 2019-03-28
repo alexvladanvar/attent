@@ -12,6 +12,9 @@ import AppHeader from '@/components/AppHeader'
 export default {
   components: {
     AppHeader
+  },
+  created() {
+    this.$store.dispatch('getUser')
   }
 }
 </script>

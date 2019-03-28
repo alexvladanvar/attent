@@ -134,7 +134,8 @@ export default {
     },
     groupErrors() {
       const errors = []
-      if (!this.$v.group.$dirty) return errors
+      console.log(this.select)
+      if (!this.$v.group.$dirty || this.select === 'Teacher') return errors
       !this.$v.group.required && errors.push('Group is required')
       return errors
     },
@@ -171,7 +172,12 @@ export default {
       console.log(errors)
       if (!errors.length) {
         const { email, password, group, select } = this
-        await this.submitSignup({ email, password, group, role: select })
+        await this.submitSignup({
+          login: email,
+          password,
+          group,
+          role: select === 'Teacher' ? 1 : 0
+        })
         this.$router.push('/login')
       }
     }

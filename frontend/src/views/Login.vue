@@ -77,8 +77,11 @@ export default {
       if (!errors.length) {
         // call submit action
         const { email, password } = this
-        await this.submitLogin({ email, password })
-        this.$router.push('/')
+        const res = await this.submitLogin({ login: email, password })
+        console.log(res)
+        if (res) {
+          this.$router.push('/')
+        }
       }
     },
     clear() {

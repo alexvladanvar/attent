@@ -26,8 +26,7 @@ public class UserTest {
     public UserTest() {
     }
 
-    public UserTest(int userId, String login, String password, int role) {
-        this.userId = userId;
+    public UserTest( String login, String password, int role) {
         this.login = login;
         this.password = password;
         this.role = role;

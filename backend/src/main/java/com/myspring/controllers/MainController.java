@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
+import java.io.*;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,13 +138,13 @@ public class MainController {
     @RequestMapping(value = "/me", method = RequestMethod.GET)
     public String getUserById (HttpServletRequest req) {
         try {
-            UserTest tempUser = (UserTest)req.getSession().getAttribute("USER");
+            UserTest tempUser = (UserTest)req.getSession(false).getAttribute("USER");
             return gson.toJson(tempUser);
         } catch (Exception e) {
             e.printStackTrace();
-
+            return gson.toJson(new JsonResponse(false));
         }
-        return gson.toJson(new JsonResponse(false));
+
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -191,8 +192,10 @@ public class MainController {
     @ResponseBody
     public String getMyAttendaces(HttpServletRequest request) {
         try {
-            UserTest tempUser = (UserTest)request.getSession().getAttribute("USER");
+            UserTest tempUser = (UserTest)request.getSession(false).getAttribute("USER");
+            System.err.println(tempUser.getLogin());
             StudentsTest tempStudentTest = dbbean.getStudentById(tempUser.getUserId());
+            System.err.println(tempStudentTest.getFirstName() + ' ' + tempStudentTest.getLastName());
             List<AttendanceTest> attendances = dbbean.getAllAttendanceByStudentId(tempStudentTest.getStudentId());
             return  gson2.toJson(attendances);
         } catch (Exception e) {
@@ -222,6 +225,4 @@ public class MainController {
         }
         return gson.toJson(new JsonResponse(false));
     }
-
-
 }

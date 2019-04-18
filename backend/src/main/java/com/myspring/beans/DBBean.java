@@ -120,9 +120,13 @@ public class DBBean {
     public StudentsTest getStudentById(int id) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<UserTest> query2 = criteriaBuilder.createQuery(UserTest.class);
+        Root<UserTest> roo = query2.from(UserTest.class);
+        UserTest user = session.createQuery(query2.where(criteriaBuilder.equal(roo.get("userId"), id))).getSingleResult();
+
         CriteriaQuery<StudentsTest> query = criteriaBuilder.createQuery(StudentsTest.class);
         Root<StudentsTest> root = query.from(StudentsTest.class);
-        StudentsTest studentsTest = session.createQuery(query.where(criteriaBuilder.equal(root.get("studentId"), id))).getSingleResult();
+        StudentsTest studentsTest = session.createQuery(query.where(criteriaBuilder.equal(root.get("userTest"), user))).getSingleResult();
         session.close();
         return studentsTest;
     }

@@ -3,6 +3,6 @@
     <string name="login_button">Sign In</string>
     <string name="login_string">Login</string>
     <string name="password_string">Password</string>
-    <string name="greeting_string">Welcome, Vlados!</string>
+    <string name="greeting_string">Welcome</string>
     <string name="scan_qr_button">Scan QR</string>
 </resources>

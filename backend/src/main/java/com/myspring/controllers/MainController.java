@@ -3,26 +3,18 @@ package com.myspring.controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.myspring.beans.DBBean;
-
-import com.myspring.db.TimeDB;
 import com.myspring.entities.*;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.test.util.MatcherAssertionErrors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
-import java.io.*;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 @Controller
 public class MainController {

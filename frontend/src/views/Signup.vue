@@ -176,7 +176,7 @@ export default {
           login: email,
           password,
           group,
-          role: select === 'Teacher' ? 1 : 0
+          role: select === 'Teacher' ? 1 : 2
         })
         this.$router.push('/login')
       }

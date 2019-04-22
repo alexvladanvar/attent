@@ -7,19 +7,20 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users_test")
 public class UserTest {
-
+    @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private int userId;
 
-
+    @Expose
     @Column(name = "login")
     private String login;
 
     @Column(name = "password")
     private String password;
 
+    @Expose
     @Column(name = "role")
     private int role;
 

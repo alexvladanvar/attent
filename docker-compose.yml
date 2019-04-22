@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: "swd3test"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_ROOT_PASSWORD: ""
+    ports: 
+      - 3306:3306
+    volumes: 
+      - ./data:/var/lib/mysql
+    
+  backend:
+    build: ./backend
+    image: vladalexandrov/backend
+    ports:
+      - "8080:8080"
+    depends_on: 
+      - mysql
+
+  frontend:
+    build: ./frontend
+    image: vladalexandrov/frontend
+    ports:
+      - "80:80"
+    links: 
+      - backend

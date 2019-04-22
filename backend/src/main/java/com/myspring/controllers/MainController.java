@@ -3,9 +3,11 @@ package com.myspring.controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.myspring.beans.DBBean;
+
 import com.myspring.db.TimeDB;
 import com.myspring.entities.*;
 import org.apache.commons.lang3.RandomStringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.util.MatcherAssertionErrors;
@@ -31,12 +33,13 @@ public class MainController {
     public static Gson gson = new Gson();
     public static Gson gson2 = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+
     @CrossOrigin
     @ResponseBody
     @RequestMapping(value = {"index", "/"})
     public String indexPage(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
-
+  
         if (session == null) {
             return gson.toJson(new JsonResponse(false));
         }

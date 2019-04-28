@@ -26,6 +26,7 @@ public class StudentsTest {
     @JoinColumn(name = "group_id")
     private GroupsTest group;
 
+    @Expose
     @OneToOne
     private UserTest userTest;
 

@@ -131,6 +131,20 @@ public class DBBean {
         return studentsTest;
     }
 
+    public TeachersTest getTeacherById(int id) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<UserTest> query2 = criteriaBuilder.createQuery(UserTest.class);
+        Root<UserTest> roo = query2.from(UserTest.class);
+        UserTest user = session.createQuery(query2.where(criteriaBuilder.equal(roo.get("userId"), id))).getSingleResult();
+
+        CriteriaQuery<TeachersTest> query = criteriaBuilder.createQuery(TeachersTest.class);
+        Root<TeachersTest> root = query.from(TeachersTest.class);
+        TeachersTest teachersTest = session.createQuery(query.where(criteriaBuilder.equal(root.get("userTest"), user))).getSingleResult();
+        session.close();
+        return teachersTest;
+    }
+
     public List<AttendanceTest> getAllAttendanceByStudentId(int id) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
@@ -141,5 +155,53 @@ public class DBBean {
         return attendanceTest;
     }
 
+    public void setDefaultAttendance(TransitLesson transitLesson, TeachersTest teachersTest){
+        LessonsTest lessonsTest = new LessonsTest();
+        GroupsTest tempGroup = getGroupById(transitLesson.getGroupId());
+        lessonsTest.setGroup(tempGroup);
+        lessonsTest.setName(transitLesson.getLessonName());
+        lessonsTest.setTeacher(teachersTest);
 
+        Session session = sessionFactory.openSession();
+        session.save(lessonsTest);
+        List<StudentsTest> studentsTests = session.createQuery("FROM StudentsTest where group.groupId = :groupId").setParameter("groupId",tempGroup.getGroupId()).list();
+        for (StudentsTest st : studentsTests) {
+            AttendanceTest at = new AttendanceTest();
+            at.setLesson(lessonsTest);
+            at.setStudent(st);
+            at.setAttended(false);
+            session.save(at);
+        }
+        session.close();
+        System.err.println("Раз два три четыре пять, с детства с рифмой я дружу");
+    }
+
+
+    public void updateAttendance(AttendanceTest attendanceTest){
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        session.update(attendanceTest);
+        transaction.commit();
+        session.close();
+    }
+
+    public AttendanceTest getAttbyIds(int userId, int lessonId) {
+        Session session = sessionFactory.openSession();
+
+        System.out.println("qwe");
+        AttendanceTest attendanceTest = (AttendanceTest) session.createQuery("" +
+                "SELECT at " +
+                "FROM AttendanceTest at " +
+                "join UserTest ut ON ut.userId = :userId " +
+                "join StudentsTest st ON st.userTest.userId = ut.userId " +
+                "join LessonsTest ls ON ls.lessonId = :lessonId " +
+                "where at.student.userTest.userId = :userId " +
+                "and at.lesson.lessonId = :lessonId")
+                .setParameter("userId",userId)
+                .setParameter("lessonId",lessonId)
+                .uniqueResult();
+
+        session.close();
+        return attendanceTest;
+    }
 }

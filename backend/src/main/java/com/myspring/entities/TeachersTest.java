@@ -21,6 +21,7 @@ public class TeachersTest {
     @Column(name = "first_name")
     private String firstName;
 
+    @Expose
     @OneToOne
     private UserTest userTest;
 

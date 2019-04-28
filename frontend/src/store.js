@@ -4,14 +4,23 @@ import router from './router'
 
 Vue.use(Vuex)
 
-import { signUp, logIn, getUser, getUserData } from './services/UserServices'
+import {
+  signUp,
+  logIn,
+  getUser,
+  getUserData,
+  logout,
+  generateQR,
+  getAttendanceData
+} from './services/UserServices'
 
 export default new Vuex.Store({
   state: {
     loading: false,
     user: false,
     userData: null,
-    qr: null
+    qr: null,
+    attendances: null
   },
   mutations: {
     SET_LOADING(store, loading) {
@@ -22,12 +31,18 @@ export default new Vuex.Store({
     },
     LOG_OUT(store) {
       store.user = null
+      store.userData = null
+      router.push('/')
     },
     GET_USER_DATA(store, data) {
       store.userData = data
+      console.log('qweqwe', data)
     },
     GENERATE_QR(store, text) {
       store.qr = text
+    },
+    SET_ATTENDANCES(store, attendances) {
+      store.attendances = attendances
     }
   },
   actions: {
@@ -52,8 +67,10 @@ export default new Vuex.Store({
         return resData.data.success
       })
     },
-    logout({ commit }) {
+    async logout({ commit }) {
+      await logout()
       commit('LOG_OUT')
+      return true
     },
     getUser({ commit }) {
       return getUser().then(data => {
@@ -71,8 +88,18 @@ export default new Vuex.Store({
         commit('GET_USER_DATA', data.data)
       })
     },
-    generateQR({ commit }, text) {
-      commit('GENERATE_QR', text)
+    async getAttendances({ commit }) {
+      const res = await getAttendanceData()
+
+      commit('SET_ATTENDANCES', res.data)
+
+      console.log(res.data)
+    },
+    async generateQR({ commit }) {
+      const res = await generateQR({ lesson: 'qwe', date: 'qwe' })
+
+      console.log(res)
+      commit('GENERATE_QR', res.data.hash)
     }
   }
 })

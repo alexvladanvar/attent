@@ -3,25 +3,18 @@ package com.myspring.controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.myspring.beans.DBBean;
-
-import com.myspring.db.TimeDB;
 import com.myspring.entities.*;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.test.util.MatcherAssertionErrors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
-import java.io.*;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Controller
 public class MainController {
@@ -147,7 +140,6 @@ public class MainController {
             e.printStackTrace();
             return gson.toJson(new JsonResponse(false));
         }
-
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -155,20 +147,6 @@ public class MainController {
     @ResponseBody
     public String logout(HttpServletRequest req) {
 
-        if (req.getSession() != null) {
-            req.getSession().invalidate();
-            return gson.toJson(new JsonResponse(true));
-        }
-        return gson.toJson(new JsonResponse(false));
-
-    }
-
-    @RequestMapping(value = "/mark/{lessonId}", method = RequestMethod.GET)
-    @CrossOrigin
-    @ResponseBody
-    public String mark(HttpServletRequest req, @PathVariable("lessonId") String lessonId) {
-
-        int studentId = Integer.parseInt(req.getParameter("studentId"));
         if (req.getSession() != null) {
             req.getSession().invalidate();
             return gson.toJson(new JsonResponse(true));
@@ -227,5 +205,64 @@ public class MainController {
             e.printStackTrace();
         }
         return gson.toJson(new JsonResponse(false));
+    }
+
+
+    @GetMapping(path = "/getUserData")
+    @CrossOrigin
+    @ResponseBody
+    public String getUserData(HttpServletRequest req) {
+        try {
+            UserTest tempUser = (UserTest)req.getSession(false).getAttribute("USER");
+            if (tempUser.getRole() == 1) {
+                StudentsTest studentsTest = dbbean.getStudentById(tempUser.getUserId());
+                return gson2.toJson(studentsTest);
+            }
+            else {
+                TeachersTest teachersTest = dbbean.getTeacherById(tempUser.getUserId());
+                return gson2.toJson(teachersTest);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
+    }
+
+
+    @PostMapping(path = "/setDefaultAtt")
+    @CrossOrigin
+    @ResponseBody
+    public String setDefaultAtt(@RequestBody TransitLesson transitLesson, HttpServletRequest req) {
+        try {
+            UserTest tempUser = (UserTest)req.getSession(false).getAttribute("USER");
+            TeachersTest teachersTest = dbbean.getTeacherById(tempUser.getUserId());
+
+            dbbean.setDefaultAttendance(transitLesson, teachersTest);
+
+            System.err.println(transitLesson);
+            return gson.toJson(transitLesson);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
+    }
+
+
+    @GetMapping(path = "/checkAtt/{lessonId}")
+    @CrossOrigin
+    @ResponseBody
+    public String checkAttendance(@PathVariable("lessonId") int lessonId, HttpServletRequest req) {
+        try {
+            UserTest tempUser = (UserTest) req.getSession(false).getAttribute("USER");
+            AttendanceTest attendanceTest = dbbean.getAttbyIds(tempUser.getUserId(), lessonId);
+            attendanceTest.setAttended(true);
+            dbbean.updateAttendance(attendanceTest);
+            return gson.toJson(new JsonResponse(true));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
     }
 }

@@ -1,4 +1,4 @@
-package iitu.kz.attendancechecker.entities
+package iitu.kz.attendancechecker.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty

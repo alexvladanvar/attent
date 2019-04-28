@@ -1,25 +1,23 @@
-package iitu.kz.attendancechecker
+package iitu.kz.attendancechecker.activity
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.TextView
 import android.content.Intent
 import android.net.Uri
-import iitu.kz.attendancechecker.entities.User
+import iitu.kz.attendancechecker.R
+import iitu.kz.attendancechecker.model.User
 import io.paperdb.Paper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 
 
-class WelcomeActivity : AppCompatActivity() {
+class WelcomeActivity : BaseActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		Paper.init(this)
 		setContentView(R.layout.activity_welcome)
 		getData()
 	}
@@ -53,7 +51,7 @@ class WelcomeActivity : AppCompatActivity() {
 	private fun getData() {
 		val textView = findViewById<TextView>(R.id.greeting)
 		val sessionId = Paper.book().read<String>("sessionId")
-		RetrofitClient.retrofit.create<AttentService>().userInfo(sessionId).enqueue(object : Callback<User> {
+		attentService.userInfo(sessionId).enqueue(object : Callback<User> {
 			override fun onResponse(call: Call<User>, response: Response<User>) {
 				println(response.body())
 				textView.text = "Welcome, ${response.body()?.login}!"

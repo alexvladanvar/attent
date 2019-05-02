@@ -16,6 +16,11 @@
             android:usesCleartextTraffic="true"
             tools:ignore="GoogleAppIndexingWarning"
             tools:replace="android:icon">
+        <activity
+                android:name=".activity.AttendanceActivity"
+                android:label="@string/title_activity_attendance"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity android:name=".activity.WelcomeActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"

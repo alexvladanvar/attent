@@ -43,10 +43,16 @@ class MainActivity : BaseActivity() {
 						Paper.book().write("sessionId", sessionId)
 						openWelcomeActivity()
 					}
-					else -> {
+					false -> {
 						pDialog.hide()
 						SweetAlertDialog(this@MainActivity)
 							.setTitleText("Incorrect login or password")
+							.show()
+					}
+					else -> {
+						pDialog.hide()
+						SweetAlertDialog(this@MainActivity)
+							.setTitleText("Server error")
 							.show()
 					}
 
@@ -63,7 +69,8 @@ class MainActivity : BaseActivity() {
 	}
 
 	fun openWelcomeActivity() {
-		val intent = Intent(this, WelcomeActivity::class.java)
+//		val intent = Intent(this, WelcomeActivity::class.java)
+		val intent = Intent(this, AttendanceActivity::class.java)
 		startActivity(intent)
 	}
 }

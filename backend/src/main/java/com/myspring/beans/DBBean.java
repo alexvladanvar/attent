@@ -1,6 +1,7 @@
 package com.myspring.beans;
 
 import com.myspring.entities.*;
+import com.myspring.model.CreateLessonRequest;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -27,61 +28,63 @@ public class DBBean {
 
     }
 
-    public void addUser(UserTest user){
+    public User addUser(User user){
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(user);
+        int id = (int) session.save(user);
+        user.setUserId(id);
+        transaction.commit();
+        session.close();
+        return user;
+    }
+
+    public void addStudent(Student student) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        session.save(student);
         transaction.commit();
         session.close();
     }
 
-    public void addStudent(StudentsTest studentsTest) {
+    public void addTeacher(Teacher teacher) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(studentsTest);
+        session.save(teacher);
         transaction.commit();
         session.close();
     }
 
-    public void addTeacher(TeachersTest teachersTest) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(teachersTest);
-        transaction.commit();
-        session.close();
-    }
-
-    public List<UserTest> getAllUsers() {
+    public List<User> getAllUsers() {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<UserTest> query = criteriaBuilder.createQuery(UserTest.class);
-        Root<UserTest> root = query.from(UserTest.class);
-        List<UserTest> allUsers = session.createQuery(query).getResultList();
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        List<User> allUsers = session.createQuery(query).getResultList();
         session.close();
         return allUsers;
     }
 
-    public UserTest getUserByLoginAndPassword(String login, String password) {
+    public User getUserByLoginAndPassword(String login, String password) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<UserTest> criteriaQuery = builder.createQuery(UserTest.class);
-        Root root = criteriaQuery.from(UserTest.class);
+        CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
+        Root root = criteriaQuery.from(User.class);
         Predicate predicate = builder.and(builder.equal(root.get("login"), login), builder.equal(root.get("password"), password)); //-
-        UserTest userList = session.createQuery(criteriaQuery.where(predicate)).uniqueResult();
+        User userList = session.createQuery(criteriaQuery.where(predicate)).uniqueResult();
         return (userList!=null?userList:null);
     }
 
-    public UserTest getUserById(int id) {
+    public User getUserById(int id) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<UserTest> query = criteriaBuilder.createQuery(UserTest.class);
-        Root<UserTest> root = query.from(UserTest.class);
-        UserTest users = session.createQuery(query.where(criteriaBuilder.equal(root.get("userId"), id))).getSingleResult();
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        User users = session.createQuery(query.where(criteriaBuilder.equal(root.get("userId"), id))).getSingleResult();
         session.close();
         return users;
     }
 
-    public void removeUser(UserTest user){
+    public void removeUser(User user){
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.delete(user);
@@ -89,7 +92,7 @@ public class DBBean {
         session.close();
     }
 
-    public void updateUser(UserTest user){
+    public void updateUser(User user){
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
             session.update(user);
@@ -97,111 +100,159 @@ public class DBBean {
             session.close();
     }
 
-    public GroupsTest getGroupByName(String name) {
+    public Group getGroupByName(String name) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<GroupsTest> query = criteriaBuilder.createQuery(GroupsTest.class);
-        Root<GroupsTest> root = query.from(GroupsTest.class);
-        GroupsTest group = session.createQuery(query.where(criteriaBuilder.equal(root.get("groupName"), name))).getSingleResult();
+        CriteriaQuery<Group> query = criteriaBuilder.createQuery(Group.class);
+        Root<Group> root = query.from(Group.class);
+        Group group = session.createQuery(query.where(criteriaBuilder.equal(root.get("groupName"), name))).getSingleResult();
         session.close();
         return group;
     }
 
-    public GroupsTest getGroupById(int id) {
+    public Group getGroupById(int id) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<GroupsTest> query = criteriaBuilder.createQuery(GroupsTest.class);
-        Root<GroupsTest> root = query.from(GroupsTest.class);
-        GroupsTest group = session.createQuery(query.where(criteriaBuilder.equal(root.get("groupId"), id))).getSingleResult();
+        CriteriaQuery<Group> query = criteriaBuilder.createQuery(Group.class);
+        Root<Group> root = query.from(Group.class);
+        Group group = session.createQuery(query.where(criteriaBuilder.equal(root.get("groupId"), id))).getSingleResult();
         session.close();
         return group;
     }
 
-    public StudentsTest getStudentById(int id) {
+    public Student getStudentById(int id) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<UserTest> query2 = criteriaBuilder.createQuery(UserTest.class);
-        Root<UserTest> roo = query2.from(UserTest.class);
-        UserTest user = session.createQuery(query2.where(criteriaBuilder.equal(roo.get("userId"), id))).getSingleResult();
+        CriteriaQuery<User> query2 = criteriaBuilder.createQuery(User.class);
+        Root<User> roo = query2.from(User.class);
+        User user = session.createQuery(query2.where(criteriaBuilder.equal(roo.get("userId"), id))).getSingleResult();
 
-        CriteriaQuery<StudentsTest> query = criteriaBuilder.createQuery(StudentsTest.class);
-        Root<StudentsTest> root = query.from(StudentsTest.class);
-        StudentsTest studentsTest = session.createQuery(query.where(criteriaBuilder.equal(root.get("userTest"), user))).getSingleResult();
+        CriteriaQuery<Student> query = criteriaBuilder.createQuery(Student.class);
+        Root<Student> root = query.from(Student.class);
+        Student student = session.createQuery(query.where(criteriaBuilder.equal(root.get("user"), user))).getSingleResult();
         session.close();
-        return studentsTest;
+        return student;
     }
 
-    public TeachersTest getTeacherById(int id) {
+    public Teacher getTeacherById(int id) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<UserTest> query2 = criteriaBuilder.createQuery(UserTest.class);
-        Root<UserTest> roo = query2.from(UserTest.class);
-        UserTest user = session.createQuery(query2.where(criteriaBuilder.equal(roo.get("userId"), id))).getSingleResult();
+        CriteriaQuery<User> query2 = criteriaBuilder.createQuery(User.class);
+        Root<User> roo = query2.from(User.class);
+        User user = session.createQuery(query2.where(criteriaBuilder.equal(roo.get("userId"), id))).getSingleResult();
 
-        CriteriaQuery<TeachersTest> query = criteriaBuilder.createQuery(TeachersTest.class);
-        Root<TeachersTest> root = query.from(TeachersTest.class);
-        TeachersTest teachersTest = session.createQuery(query.where(criteriaBuilder.equal(root.get("userTest"), user))).getSingleResult();
+        CriteriaQuery<Teacher> query = criteriaBuilder.createQuery(Teacher.class);
+        Root<Teacher> root = query.from(Teacher.class);
+        Teacher teacher = session.createQuery(query.where(criteriaBuilder.equal(root.get("user"), user))).getSingleResult();
         session.close();
-        return teachersTest;
+        return teacher;
     }
 
-    public List<AttendanceTest> getAllAttendanceByStudentId(int id) {
+    public List<Attendance> getAllAttendanceByStudentId(int id) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<AttendanceTest> query = criteriaBuilder.createQuery(AttendanceTest.class);
-        Root<AttendanceTest> root = query.from(AttendanceTest.class);
-        List<AttendanceTest> attendanceTest = session.createQuery(query.where(criteriaBuilder.equal(root.get("student"), id))).getResultList();
+        CriteriaQuery<Attendance> query = criteriaBuilder.createQuery(Attendance.class);
+        Root<Attendance> root = query.from(Attendance.class);
+        List<Attendance> attendance = session.createQuery(query.where(criteriaBuilder.equal(root.get("student"), id))).getResultList();
         session.close();
-        return attendanceTest;
+        return attendance;
     }
 
-    public void setDefaultAttendance(TransitLesson transitLesson, TeachersTest teachersTest){
-        LessonsTest lessonsTest = new LessonsTest();
-        GroupsTest tempGroup = getGroupById(transitLesson.getGroupId());
-        lessonsTest.setGroup(tempGroup);
-        lessonsTest.setName(transitLesson.getLessonName());
-        lessonsTest.setTeacher(teachersTest);
+    public void setDefaultAttendance(CreateLessonRequest data, Teacher teacher){
+        Lesson lesson = new Lesson();
+        Group tempGroup = getGroupById(data.getGroupId());
+        lesson.setGroup(tempGroup);
+        Subject subject = getSubjectById(data.getSubjectId());
+        lesson.setSubject(subject);
+        lesson.setTeacher(teacher);
+        lesson.setDate(data.getDate());
+
 
         Session session = sessionFactory.openSession();
-        session.save(lessonsTest);
-        List<StudentsTest> studentsTests = session.createQuery("FROM StudentsTest where group.groupId = :groupId").setParameter("groupId",tempGroup.getGroupId()).list();
-        for (StudentsTest st : studentsTests) {
-            AttendanceTest at = new AttendanceTest();
-            at.setLesson(lessonsTest);
+        session.save(lesson);
+        List<Student> students = session.createQuery("FROM Student where group.groupId = :groupId").setParameter("groupId",tempGroup.getGroupId()).list();
+        for (Student st : students) {
+            Attendance at = new Attendance();
+            at.setLesson(lesson);
             at.setStudent(st);
             at.setAttended(false);
             session.save(at);
         }
         session.close();
-        System.err.println("Раз два три четыре пять, с детства с рифмой я дружу");
     }
 
 
-    public void updateAttendance(AttendanceTest attendanceTest){
+    public void updateAttendance(Attendance attendance){
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.update(attendanceTest);
+        session.update(attendance);
         transaction.commit();
         session.close();
     }
 
-    public AttendanceTest getAttbyIds(int userId, int lessonId) {
+    public Attendance getAttbyIds(int userId, int lessonId) {
         Session session = sessionFactory.openSession();
 
         System.out.println("qwe");
-        AttendanceTest attendanceTest = (AttendanceTest) session.createQuery("" +
+        Attendance attendance = (Attendance) session.createQuery("" +
                 "SELECT at " +
-                "FROM AttendanceTest at " +
-                "join UserTest ut ON ut.userId = :userId " +
-                "join StudentsTest st ON st.userTest.userId = ut.userId " +
-                "join LessonsTest ls ON ls.lessonId = :lessonId " +
-                "where at.student.userTest.userId = :userId " +
+                "FROM Attendance at " +
+                "join User ut ON ut.userId = :userId " +
+                "join Student st ON st.user.userId = ut.userId " +
+                "join Lesson ls ON ls.lessonId = :lessonId " +
+                "where at.student.user.userId = :userId " +
                 "and at.lesson.lessonId = :lessonId")
                 .setParameter("userId",userId)
                 .setParameter("lessonId",lessonId)
                 .uniqueResult();
 
         session.close();
-        return attendanceTest;
+        return attendance;
+    }
+
+
+    public Subject getSubjectById(int id) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Subject> query = criteriaBuilder.createQuery(Subject.class);
+        Root<Subject> root = query.from(Subject.class);
+        Subject subject = session.createQuery(query.where(criteriaBuilder.equal(root.get("subjectId"), id))).getSingleResult();
+        session.close();
+        return subject;
+    }
+
+    public List<Subject> getAllSubjects() {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Subject> query = criteriaBuilder.createQuery(Subject.class);
+        Root<Subject> root = query.from(Subject.class);
+        List<Subject> allSubjects = session.createQuery(query).getResultList();
+        session.close();
+        return allSubjects;
+    }
+
+    public List<Group> getAllGroups() {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Group> query = criteriaBuilder.createQuery(Group.class);
+        Root<Group> root = query.from(Group.class);
+        List<Group> allGroups = session.createQuery(query).getResultList();
+        session.close();
+        return allGroups;
+    }
+
+    public List<Lesson> getLessons(int id) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Teacher> query = criteriaBuilder.createQuery(Teacher.class);
+        Root<Teacher> root = query.from(Teacher.class);
+        Teacher teacher = session.createQuery(query.where(criteriaBuilder.equal(root.get("teacherId"), id))).getSingleResult();
+
+
+        CriteriaQuery<Lesson> query2 = criteriaBuilder.createQuery(Lesson.class);
+        Root<Lesson> root2 = query2.from(Lesson.class);
+        List<Lesson> lessons = session.createQuery(query2.where(criteriaBuilder.equal(root2.get("teacher"), teacher))).getResultList();
+        session.close();
+        return lessons;
     }
 }

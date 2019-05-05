@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "users_test")
-public class UserTest {
+public class User {
     @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,10 @@ public class UserTest {
     @Column(name = "role")
     private int role;
 
-    public UserTest() {
+    public User() {
     }
 
-    public UserTest( String login, String password, int role) {
+    public User(String login, String password, int role) {
         this.login = login;
         this.password = password;
         this.role = role;
@@ -64,4 +64,5 @@ public class UserTest {
     public void setRole(int role) {
         this.role = role;
     }
+
 }

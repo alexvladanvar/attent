@@ -1,4 +1,4 @@
-package com.myspring.entities;
+package com.myspring.model;
 
 public class JsonResponse {
     boolean success;

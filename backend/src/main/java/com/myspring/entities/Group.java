@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "groups_test")
-public class GroupsTest {
+public class Group {
 
     @Expose
     @Id
@@ -14,14 +14,15 @@ public class GroupsTest {
     @Column(name = "group_id")
     private int groupId;
 
+
     @Expose
     @Column(name = "group_name")
     private String groupName;
 
-    public GroupsTest() {
+    public Group() {
     }
 
-    public GroupsTest(String groupName) {
+    public Group(String groupName) {
         this.groupName = groupName;
     }
 

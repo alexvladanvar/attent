@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "attendance_test")
-public class AttendanceTest {
+public class Attendance {
 
     @Expose
     @Id
@@ -21,17 +21,17 @@ public class AttendanceTest {
     @Expose
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn (name = "student_id")
-    private StudentsTest student;
+    private Student student;
 
     @Expose
     @ManyToOne (optional=false, cascade=CascadeType.ALL)
     @JoinColumn (name="lesson_id")
-    private LessonsTest lesson;
+    private Lesson lesson;
 
-    public AttendanceTest() {
+    public Attendance() {
     }
 
-    public AttendanceTest(boolean attended, StudentsTest student, LessonsTest lesson) {
+    public Attendance(boolean attended, Student student, Lesson lesson) {
         this.attended = attended;
         this.student = student;
         this.lesson = lesson;
@@ -53,19 +53,19 @@ public class AttendanceTest {
         this.attended = attended;
     }
 
-    public StudentsTest getStudent() {
+    public Student getStudent() {
         return student;
     }
 
-    public void setStudent(StudentsTest student) {
+    public void setStudent(Student student) {
         this.student = student;
     }
 
-    public LessonsTest getLesson() {
+    public Lesson getLesson() {
         return lesson;
     }
 
-    public void setLesson(LessonsTest lesson) {
+    public void setLesson(Lesson lesson) {
         this.lesson = lesson;
     }
 

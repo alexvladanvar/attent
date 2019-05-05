@@ -41,6 +41,7 @@ class MainActivity : BaseActivity() {
 						val responseCookie = response.raw().header("Set-Cookie")
 						val sessionId = responseCookie?.split("; ")?.get(0)
 						Paper.book().write("sessionId", sessionId)
+						pDialog.hide()
 						openWelcomeActivity()
 					}
 					false -> {

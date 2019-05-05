@@ -16,32 +16,22 @@
             android:textColor="#000000"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/attendance_checkbox"
-            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/attendance_check"
     />
 
-
-    <CheckBox
-            android:id="@+id/attendance_checkbox"
-            android:textSize="18sp"
-            android:enabled="false"
-            android:layout_height="wrap_content"
+    <ImageView
+            android:id="@+id/attendance_check"
+            android:icon="@drawable/ic_check_box_outline_blank_42dp"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/check"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/attendance_button"
-            android:layout_marginTop="8dp"/>
-
-    <Button
-            android:id="@+id/attendance_button"
-            android:text="@string/check"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:onClick="openScan"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
     />
-
 
 </android.support.constraint.ConstraintLayout>

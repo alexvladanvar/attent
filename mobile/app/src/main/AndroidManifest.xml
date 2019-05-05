@@ -21,11 +21,6 @@
                 android:label="@string/title_activity_attendance"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".activity.WelcomeActivity">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".activity.MainActivity"/>
-        </activity>
         <activity
                 android:name=".activity.MainActivity"
                 android:theme="@style/Theme.AppCompat.NoActionBar">

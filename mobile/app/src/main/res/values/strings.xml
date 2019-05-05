@@ -4,8 +4,11 @@
     <string name="login_string">Login</string>
     <string name="password_string">Password</string>
     <string name="greeting_string">Welcome</string>
-    <string name="scan_qr_button">Scan QR</string>
+    <string name="scan_qr_button">Check Attendance</string>
     <string name="title_activity_attendance">AttendanceActivity</string>
     <string name="is_attended">Is attended</string>
     <string name="check">Check</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="attendances_string">The list of your attendances:</string>
+    <string name="logout">Logout</string>
 </resources>

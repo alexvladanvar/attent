@@ -1,19 +1,17 @@
 package com.myspring.model;
 
-public class TransitUser {
+public class UserData {
     private String login;
-    private String password;
     private int role;
     private String firstName;
     private String lastName;
     private String groupName;
 
-    public TransitUser() {
+    public UserData() {
     }
 
-    public TransitUser(String login, String password, int role, String firstName, String lastName, String groupName) {
+    public UserData(String login, int role, String firstName, String lastName, String groupName) {
         this.login = login;
-        this.password = password;
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -26,14 +24,6 @@ public class TransitUser {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public int getRole() {

@@ -47,11 +47,11 @@ public class MainController {
     public String registration(@RequestBody TransitUser user) {
         try {
             User tempUser = new User(user.getLogin(), user.getPassword(), user.getRole());
-            dbbean.addUser(tempUser);
+            User tempUser1 = dbbean.addUser(tempUser);
             if (tempUser.getRole() == 1) {
                 Group group = null;
                 group = dbbean.getGroupByName(user.getGroupName());
-                Student student = new Student(user.getFirstName(),user.getLastName(), group, tempUser);
+                Student student = new Student(user.getFirstName(),user.getLastName(), group, tempUser1);
                 dbbean.addStudent(student);
             }
             else if(tempUser.getRole() == 2){
@@ -155,18 +155,6 @@ public class MainController {
 
     }
 
-    @RequestMapping(value = "/getGroup/{groupId}", method = RequestMethod.GET)
-    @CrossOrigin
-    @ResponseBody
-    public String getGroupById(@PathVariable("groupId") String groupId) {
-        try {
-            Group tempGroup = dbbean.getGroupById(Integer.parseInt(groupId));
-            return gson.toJson(tempGroup);
-        }catch (Exception e ) {
-            e.printStackTrace();
-            return gson.toJson(new JsonResponse(false));
-        }
-    }
 
     @GetMapping(path = "/attendances")
     @CrossOrigin
@@ -219,6 +207,28 @@ public class MainController {
             else {
                 Teacher teacher = dbbean.getTeacherById(tempUser.getUserId());
                 return gson2.toJson(teacher);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
+    }
+
+    @GetMapping(path = "/getUserDataV2")
+    @CrossOrigin
+    @ResponseBody
+    public String getUserDataV2(HttpServletRequest req) {
+        try {
+            User tempUser = (User)req.getSession(false).getAttribute("USER");
+            if (tempUser.getRole() == 1) {
+                Student student = dbbean.getStudentById(tempUser.getUserId());
+                UserData userData = new UserData(tempUser.getLogin(), tempUser.getRole(), student.getFirstName(), student.getLastName(), student.getGroup().getGroupName());
+                return gson.toJson(userData);
+            }
+            else {
+                Teacher teacher = dbbean.getTeacherById(tempUser.getUserId());
+                UserData userData = new UserData(tempUser.getLogin(), tempUser.getRole(), teacher.getFirstName(), teacher.getLastName(), null);
+                return gson.toJson(userData);
             }
         } catch (Exception e) {
             e.printStackTrace();

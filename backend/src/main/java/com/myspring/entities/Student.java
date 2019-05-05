@@ -28,6 +28,7 @@ public class Student {
 
     @Expose
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Student() {

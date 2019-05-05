@@ -28,12 +28,14 @@ public class DBBean {
 
     }
 
-    public void addUser(User user){
+    public User addUser(User user){
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.save(user);
+        int id = (int) session.save(user);
+        user.setUserId(id);
         transaction.commit();
         session.close();
+        return user;
     }
 
     public void addStudent(Student student) {

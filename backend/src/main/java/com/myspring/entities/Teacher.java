@@ -23,6 +23,7 @@ public class Teacher {
 
     @Expose
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Teacher() {

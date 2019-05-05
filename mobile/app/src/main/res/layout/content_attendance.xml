@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="12"
+        android:id="@+id/content_attendance"
+        android:padding="12dp"
+>
+
+    <TextView
+            android:id="@+id/attendance_name"
+            android:textSize="18sp"
+            android:text="@string/greeting_string"
+            android:textColor="#000000"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/attendance_checkbox"
+            android:layout_marginEnd="10dp"
+    />
+
+
+    <CheckBox
+            android:id="@+id/attendance_checkbox"
+            android:textSize="18sp"
+            android:enabled="false"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/attendance_button"
+            android:layout_marginTop="8dp"/>
+
+    <Button
+            android:id="@+id/attendance_button"
+            android:text="@string/check"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:onClick="openScan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+    />
+
+
+</android.support.constraint.ConstraintLayout>

@@ -1,26 +1,24 @@
-package iitu.kz.attendancechecker
+package iitu.kz.attendancechecker.activity
 
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import cn.pedant.SweetAlert.SweetAlertDialog
-import iitu.kz.attendancechecker.entities.LoginRequest
-import iitu.kz.attendancechecker.entities.ResponseData
+import iitu.kz.attendancechecker.R
+import iitu.kz.attendancechecker.model.LoginRequest
+import iitu.kz.attendancechecker.model.ResponseData
 import io.paperdb.Paper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		Paper.init(this)
 		setContentView(R.layout.activity_main)
 	}
 
@@ -36,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 		pDialog.setCancelable(false)
 		pDialog.show()
 
-		RetrofitClient.retrofit.create<AttentService>().login(loginRequest).enqueue(object : Callback<ResponseData> {
+		attentService.login(loginRequest).enqueue(object : Callback<ResponseData> {
 			override fun onResponse(call: Call<ResponseData>, response: Response<ResponseData>) {
 				when (response.body()?.success) {
 					true -> {
@@ -45,10 +43,16 @@ class MainActivity : AppCompatActivity() {
 						Paper.book().write("sessionId", sessionId)
 						openWelcomeActivity()
 					}
-					else -> {
+					false -> {
 						pDialog.hide()
 						SweetAlertDialog(this@MainActivity)
 							.setTitleText("Incorrect login or password")
+							.show()
+					}
+					else -> {
+						pDialog.hide()
+						SweetAlertDialog(this@MainActivity)
+							.setTitleText("Server error")
 							.show()
 					}
 
@@ -65,7 +69,8 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	fun openWelcomeActivity() {
-		val intent = Intent(this, WelcomeActivity::class.java)
+//		val intent = Intent(this, WelcomeActivity::class.java)
+		val intent = Intent(this, AttendanceActivity::class.java)
 		startActivity(intent)
 	}
 }

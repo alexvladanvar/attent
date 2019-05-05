@@ -5,4 +5,7 @@
     <string name="password_string">Password</string>
     <string name="greeting_string">Welcome</string>
     <string name="scan_qr_button">Scan QR</string>
+    <string name="title_activity_attendance">AttendanceActivity</string>
+    <string name="is_attended">Is attended</string>
+    <string name="check">Check</string>
 </resources>

@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.myspring.beans.DBBean;
 import com.myspring.entities.*;
-import org.apache.commons.lang3.RandomStringUtils;
+import com.myspring.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -22,7 +21,8 @@ public class MainController {
     @Autowired
     DBBean dbbean;
 
-    public static Gson gson = new Gson();
+
+    public static Gson gson = new GsonBuilder().setDateFormat("MMM d HH:mm").create();
     public static Gson gson2 = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
 
@@ -36,7 +36,7 @@ public class MainController {
             return gson.toJson(new JsonResponse(false));
         }
         else {
-            UserTest user = (UserTest)session.getAttribute("user");
+            User user = (User)session.getAttribute("user");
             return gson.toJson(user);
         }
     }
@@ -46,20 +46,20 @@ public class MainController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registration(@RequestBody TransitUser user) {
         try {
-            UserTest tempUser = new UserTest(user.getLogin(), user.getPassword(), user.getRole());
+            User tempUser = new User(user.getLogin(), user.getPassword(), user.getRole());
             dbbean.addUser(tempUser);
             if (tempUser.getRole() == 1) {
-                GroupsTest groupsTest = null;
-                groupsTest = dbbean.getGroupByName(user.getGroupName());
-                StudentsTest studentsTest = new StudentsTest(user.getFirstName(),user.getLastName(),groupsTest, tempUser);
-                dbbean.addStudent(studentsTest);
+                Group group = null;
+                group = dbbean.getGroupByName(user.getGroupName());
+                Student student = new Student(user.getFirstName(),user.getLastName(), group, tempUser);
+                dbbean.addStudent(student);
             }
             else if(tempUser.getRole() == 2){
-                TeachersTest teachersTest = new TeachersTest(user.getFirstName(),user.getLastName(), tempUser);
-                dbbean.addTeacher(teachersTest);
+                Teacher teacher = new Teacher(user.getFirstName(),user.getLastName(), tempUser);
+                dbbean.addTeacher(teacher);
             }
 
-            ArrayList<UserTest> users = new ArrayList<UserTest>();
+            ArrayList<User> users = new ArrayList<User>();
             users.add(tempUser);
 
             return gson.toJson(users);
@@ -74,7 +74,7 @@ public class MainController {
     @CrossOrigin
     public String getUsers() {
         try {
-            List<UserTest> users = dbbean.getAllUsers();
+            List<User> users = dbbean.getAllUsers();
             return gson.toJson(users);
 
         }catch (Exception e) {
@@ -86,9 +86,9 @@ public class MainController {
     @ResponseBody
     @CrossOrigin
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestBody UserTest user, HttpServletRequest req) {
+    public String login(@RequestBody User user, HttpServletRequest req) {
         try {
-            UserTest tempUser =  dbbean.getUserByLoginAndPassword(user.getLogin(), user.getPassword());
+            User tempUser =  dbbean.getUserByLoginAndPassword(user.getLogin(), user.getPassword());
             if (tempUser == null) {
                 return gson.toJson(new JsonResponse(false));
             }
@@ -106,7 +106,7 @@ public class MainController {
     @ResponseBody
     @CrossOrigin
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
-    public String deleteUser (@RequestBody UserTest user) {
+    public String deleteUser (@RequestBody User user) {
         try {
             dbbean.removeUser(user);
             return gson.toJson("deleted");
@@ -119,7 +119,7 @@ public class MainController {
     @ResponseBody
     @CrossOrigin
     @RequestMapping(value = "/editUser", method = RequestMethod.POST)
-    public String editUser (@RequestBody UserTest user) {
+    public String editUser (@RequestBody User user) {
         try {
             dbbean.updateUser(user);
             return gson.toJson(user);
@@ -134,8 +134,8 @@ public class MainController {
     @RequestMapping(value = "/me", method = RequestMethod.GET)
     public String getUserById (HttpServletRequest req) {
         try {
-            UserTest tempUser = (UserTest)req.getSession(false).getAttribute("USER");
-            return gson.toJson(tempUser);
+            User tempUser = (User)req.getSession(false).getAttribute("USER");
+            return gson.toJson(new JsonResponse(true));
         } catch (Exception e) {
             e.printStackTrace();
             return gson.toJson(new JsonResponse(false));
@@ -160,7 +160,7 @@ public class MainController {
     @ResponseBody
     public String getGroupById(@PathVariable("groupId") String groupId) {
         try {
-            GroupsTest tempGroup = dbbean.getGroupById(Integer.parseInt(groupId));
+            Group tempGroup = dbbean.getGroupById(Integer.parseInt(groupId));
             return gson.toJson(tempGroup);
         }catch (Exception e ) {
             e.printStackTrace();
@@ -173,11 +173,11 @@ public class MainController {
     @ResponseBody
     public String getMyAttendaces(HttpServletRequest request) {
         try {
-            UserTest tempUser = (UserTest)request.getSession(false).getAttribute("USER");
+            User tempUser = (User)request.getSession(false).getAttribute("USER");
             System.err.println(tempUser.getLogin());
-            StudentsTest tempStudentTest = dbbean.getStudentById(tempUser.getUserId());
-            System.err.println(tempStudentTest.getFirstName() + ' ' + tempStudentTest.getLastName());
-            List<AttendanceTest> attendances = dbbean.getAllAttendanceByStudentId(tempStudentTest.getStudentId());
+            Student tempStudent = dbbean.getStudentById(tempUser.getUserId());
+            System.err.println(tempStudent.getFirstName() + ' ' + tempStudent.getLastName());
+            List<Attendance> attendances = dbbean.getAllAttendanceByStudentId(tempStudent.getStudentId());
             return  gson2.toJson(attendances);
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,23 +185,21 @@ public class MainController {
         return gson.toJson(new JsonResponse(false));
     }
 
-    @PostMapping(path = "/generateQR")
+    @GetMapping(path = "/attendancesV2")
     @CrossOrigin
     @ResponseBody
-    public String generateQRCode(@RequestBody QRClass qrClass) {
+    public String getMyAttendacesV2(HttpServletRequest request) {
         try {
-            String generatedString = RandomStringUtils.randomAlphabetic(10);
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(generatedString.getBytes());
-            byte[] digest = md.digest();
-            String myHash = DatatypeConverter.printHexBinary(digest).toUpperCase();
-
-            System.out.println(generatedString);
-            System.out.println(myHash);
-            qrClass.setHash(myHash);
-            return gson.toJson(qrClass);
-
-        }catch (Exception e) {
+            User tempUser = (User)request.getSession(false).getAttribute("USER");
+            System.err.println(tempUser.getLogin());
+            Student tempStudent = dbbean.getStudentById(tempUser.getUserId());
+            System.err.println(tempStudent.getFirstName() + ' ' + tempStudent.getLastName());
+            List<Attendance> rawAttendances = dbbean.getAllAttendanceByStudentId(tempStudent.getStudentId());
+            List<AttendanceData> attendances = rawAttendances.stream().map(a ->
+                    new AttendanceData(a.isAttended(), a.getLesson().getLessonId(), a.getLesson().getSubject().getName(), a.getLesson().getTeacher().getFirstName() + " " + a.getLesson().getTeacher().getLastName(), a.getLesson().getGroups().getGroupName())
+            ).collect(Collectors.toList());
+            return  gson.toJson(attendances);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return gson.toJson(new JsonResponse(false));
@@ -213,14 +211,14 @@ public class MainController {
     @ResponseBody
     public String getUserData(HttpServletRequest req) {
         try {
-            UserTest tempUser = (UserTest)req.getSession(false).getAttribute("USER");
+            User tempUser = (User)req.getSession(false).getAttribute("USER");
             if (tempUser.getRole() == 1) {
-                StudentsTest studentsTest = dbbean.getStudentById(tempUser.getUserId());
-                return gson2.toJson(studentsTest);
+                Student student = dbbean.getStudentById(tempUser.getUserId());
+                return gson2.toJson(student);
             }
             else {
-                TeachersTest teachersTest = dbbean.getTeacherById(tempUser.getUserId());
-                return gson2.toJson(teachersTest);
+                Teacher teacher = dbbean.getTeacherById(tempUser.getUserId());
+                return gson2.toJson(teacher);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -228,19 +226,40 @@ public class MainController {
         }
     }
 
-
-    @PostMapping(path = "/setDefaultAtt")
+    @GetMapping(path = "/getLessons")
     @CrossOrigin
     @ResponseBody
-    public String setDefaultAtt(@RequestBody TransitLesson transitLesson, HttpServletRequest req) {
+    public String getLessons(HttpServletRequest req) {
         try {
-            UserTest tempUser = (UserTest)req.getSession(false).getAttribute("USER");
-            TeachersTest teachersTest = dbbean.getTeacherById(tempUser.getUserId());
+            User tempUser = (User)req.getSession(false).getAttribute("USER");
+            Teacher teacher = dbbean.getTeacherById(tempUser.getUserId());
 
-            dbbean.setDefaultAttendance(transitLesson, teachersTest);
+            List<Lesson> lessons = dbbean.getLessons(teacher.getTeacherId());
+            List<LessonData> lessonDatas = lessons.stream().map(l ->
+                    new LessonData(l.getLessonId(), l.getSubject().getName(), l.getGroup().getGroupName(), l.getDate())
+            ).collect(Collectors.toList());
 
-            System.err.println(transitLesson);
-            return gson.toJson(transitLesson);
+            return gson.toJson(lessonDatas);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
+    }
+
+    @PostMapping(path = "/createLesson")
+    @CrossOrigin
+    @ResponseBody
+    public String createLesson(@RequestBody CreateLessonRequest data, HttpServletRequest req) {
+        try {
+            User tempUser = (User)req.getSession(false).getAttribute("USER");
+            Teacher teacher = dbbean.getTeacherById(tempUser.getUserId());
+
+
+            dbbean.setDefaultAttendance(data, teacher);
+
+            System.err.println(data);
+            return gson.toJson(new JsonResponse(true));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -254,10 +273,10 @@ public class MainController {
     @ResponseBody
     public String checkAttendance(@PathVariable("lessonId") int lessonId, HttpServletRequest req) {
         try {
-            UserTest tempUser = (UserTest) req.getSession(false).getAttribute("USER");
-            AttendanceTest attendanceTest = dbbean.getAttbyIds(tempUser.getUserId(), lessonId);
-            attendanceTest.setAttended(true);
-            dbbean.updateAttendance(attendanceTest);
+            User tempUser = (User) req.getSession(false).getAttribute("USER");
+            Attendance attendance = dbbean.getAttbyIds(tempUser.getUserId(), lessonId);
+            attendance.setAttended(true);
+            dbbean.updateAttendance(attendance);
             return gson.toJson(new JsonResponse(true));
         }
         catch (Exception e) {

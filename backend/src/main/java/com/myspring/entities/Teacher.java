@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "teachers_test")
-public class TeachersTest {
+public class Teacher {
     @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,15 +23,15 @@ public class TeachersTest {
 
     @Expose
     @OneToOne
-    private UserTest userTest;
+    private User user;
 
-    public TeachersTest() {
+    public Teacher() {
     }
 
-    public TeachersTest(String lastName, String firstName, UserTest userTest) {
+    public Teacher(String lastName, String firstName, User user) {
         this.lastName = lastName;
         this.firstName = firstName;
-        this.userTest = userTest;
+        this.user = user;
     }
 
     public int getTeaherId() {
@@ -66,11 +66,12 @@ public class TeachersTest {
         this.teacherId = teacherId;
     }
 
-    public UserTest getUserTest() {
-        return userTest;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserTest(UserTest userTest) {
-        this.userTest = userTest;
+    public void setUser(User user) {
+        this.user = user;
     }
+
 }

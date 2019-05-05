@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "students_test")
-public class StudentsTest {
+public class Student {
     @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,20 +24,20 @@ public class StudentsTest {
     @Expose
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
-    private GroupsTest group;
+    private Group group;
 
     @Expose
     @OneToOne
-    private UserTest userTest;
+    private User user;
 
-    public StudentsTest() {
+    public Student() {
     }
 
-    public StudentsTest(String firstName, String lastName, GroupsTest group, UserTest userTest) {
+    public Student(String firstName, String lastName, Group group, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.group = group;
-        this.userTest = userTest;
+        this.user = user;
     }
 
     public int getStudentId() {
@@ -64,19 +64,20 @@ public class StudentsTest {
         this.lastName = lastName;
     }
 
-    public GroupsTest getGroup() {
+    public Group getGroup() {
         return group;
     }
 
-    public void setGroup(GroupsTest group) {
+    public void setGroup(Group group) {
         this.group = group;
     }
 
-    public UserTest getUserTest() {
-        return userTest;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserTest(UserTest userTest) {
-        this.userTest = userTest;
+    public void setUser(User user) {
+        this.user = user;
     }
+
 }

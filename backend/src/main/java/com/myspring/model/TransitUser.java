@@ -1,4 +1,4 @@
-package com.myspring.entities;
+package com.myspring.model;
 
 public class TransitUser {
     private String login;

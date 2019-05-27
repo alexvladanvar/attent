@@ -43,6 +43,33 @@ public class MainController {
 
     @CrossOrigin
     @ResponseBody
+    @GetMapping(path = "/groupList")
+    public String getGroupList() {
+        try {
+            List<Group> groupList = dbbean.getAllGroups();
+            return gson.toJson(groupList);
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
+    }
+
+    @CrossOrigin
+    @ResponseBody
+    @GetMapping(path = "/subjectList")
+    public String getSubjectList() {
+        try {
+            List<Subject> subjects = dbbean.getAllSubjects();
+            return gson.toJson(subjects);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
+    }
+
+    @CrossOrigin
+    @ResponseBody
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registration(@RequestBody TransitUser user) {
         try {
@@ -294,4 +321,24 @@ public class MainController {
             return gson.toJson(new JsonResponse(false));
         }
     }
+
+    @CrossOrigin
+    @ResponseBody
+    @GetMapping(path = "/getAttByLesId/{lessonId}")
+    public String getAttendacesByLessonId(@PathVariable("lessonId") int lessonId) {
+        try {
+            List<Attendance> attendanceList = dbbean.getAttendacesByLessonId(lessonId);
+            List<AttendanceByLesson> attendances = attendanceList.stream().map(a ->
+                    new AttendanceByLesson(a.isAttended(), a.getLesson().getLessonId(), a.getLesson().getSubject().getName(), a.getStudent().getFirstName() + " " + a.getStudent().getLastName(), a.getLesson().getGroups().getGroupName())
+            ).collect(Collectors.toList());
+
+            return gson.toJson(attendances);
+
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return gson.toJson(new JsonResponse(false));
+        }
+    }
+
 }

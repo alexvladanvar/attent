@@ -64,6 +64,7 @@ public class DBBean {
         return allUsers;
     }
 
+
     public User getUserByLoginAndPassword(String login, String password) {
         Session session = sessionFactory.openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -254,5 +255,21 @@ public class DBBean {
         List<Lesson> lessons = session.createQuery(query2.where(criteriaBuilder.equal(root2.get("teacher"), teacher))).getResultList();
         session.close();
         return lessons;
+    }
+
+    public List<Attendance> getAttendacesByLessonId(int lessonId) {
+        Session session = sessionFactory.openSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Lesson> query = criteriaBuilder.createQuery(Lesson.class);
+        Root<Lesson> root = query.from(Lesson.class);
+        Lesson lesson = session.createQuery(query.where(criteriaBuilder.equal(root.get("lessonId"), lessonId))).getSingleResult();
+
+        CriteriaQuery<Attendance> query2 = criteriaBuilder.createQuery(Attendance.class);
+        Root<Attendance> root2 = query2.from(Attendance.class);
+        List<Attendance> attendances = session.createQuery(query2.where(criteriaBuilder.equal(root2.get("lesson"), lesson))).getResultList();
+
+
+        session.close();
+        return attendances;
     }
 }
